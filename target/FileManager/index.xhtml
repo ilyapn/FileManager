@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://java.sun.com/jsf/html"
+      xmlns:pr="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
+>
+
+<h:head>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"></link>
+    <script type="text/javascript" src="scripts/script.js"></script>
+    <!-- html source code -->
+    <link type="text/css" rel="stylesheet" href="/project/faces/javax.faces.resource/theme.css?ln=primefaces-black-tie" />
+</h:head>
+<h:body>
+<f:view>
+    <h:form id="isTable">
+        <!--<pr:ajaxStatus>
+            <f:facet name="start">
+                <pr:graphicImage name="giphy.gif" />
+            </f:facet>
+        </pr:ajaxStatus>-->
+        <!--<pr:graphicImage value="giphy.gif"/>-->
+        <pr:outputLabel id="lbl" value="#{treeBasicView.testSt}"/>
+        <br/>
+        <!--<h:outputLabel value="Ajax:" />
+        <pr:inplace  editor="true">
+            <pr:ajax event="save" update="isTable"></pr:ajax>
+            <p:inputText id="ad" value="#{treeBasicView.selectedNode == null ? treeBasicView.selectFolder : treeBasicView.selectedNode.data }" required="true" label="text" />
+        </pr:inplace>
+        <br/>-->
+
+       <!-- <pr:commandButton  value="add new node" action="#{treeBasicView.addNode}" update="isTable"/>-->
+        <br/>
+        <!--<pr:commandButton value="rename folder" action="#{treeBasicView.rename}" update="isTable"/>-->
+
+        <!--<pr:outputLabel value="#{treeBasicView.selectedNode.data.toString()}"/>-->
+        <pr:tree id="pnl" draggable="true" droppable="true" dragdropScope="demo" highlight="false"
+                 value="#{treeBasicView.root}" selectionMode="single" selection="#{treeBasicView.selectedNode}"
+                 var="node" dynamic="true" style="width:50%">
+            <pr:ajax event="expand" delay="2000"  /><!--onstart="iconLoad()"update="isTable:lbl tr"listener="#{treeBasicView.listener}"-->
+            <pr:ajax  event="select" update="isTable"/>
+            <pr:ajax event="dragdrop" listener="#{treeBasicView.onDragDrop}" update="@this" />
+            <pr:treeNode id="tr" collapsedIcon="ui-icon-folder-collapsed" expandedIcon="ui-icon-folder-open"   ><!--ui-icon-folder-open--><!--collapsedIcon="ui-icon-folder-collapsed"-->
+                <h:outputLabel id="tar"  value="#{node}" />
+                    <!--<pr:inplace widgetVar="rnm" id="rnm" event="dblclick" editor="true" toggleable="true">
+                        <pr:ajax event="save" listener="#{treeBasicView.listener}"  update="@this" />
+                       <p:inputText id="nameNode" value="#{node}" required="true" label="text" />
+                    </pr:inplace>-->
+            </pr:treeNode>
+        </pr:tree>
+        <pr:contextMenu for="pnl" >
+            <pr:menuitem value="delete" update="pnl" actionListener="#{treeBasicView.delete}" />
+            <pr:menuitem value="new folder" update="pnl" actionListener="#{treeBasicView.addNode}" />
+            <pr:menuitem value="rename" update="pnl text inpl" onstart="" oncomplete="PF('rnm').show()"  />
+        </pr:contextMenu>
+        <pr:dialog widgetVar="rnm" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+            <pr:outputPanel style="text-align:center;">
+                <h:outputLabel value="rename:" />
+                <pr:inplace id="inpl" editor="true">
+                    <pr:ajax event="save" update="isTable"></pr:ajax>
+                    <pr:ajax event="cancel" update="isTable"></pr:ajax>
+                    <p:inputText id="text"  value="#{treeBasicView.selectedNode.data }" required="false" label="text" >
+                        <pr:ajax delay="20" />
+                    </p:inputText>
+                </pr:inplace>
+                <!--<p:commandButton value="rename" type="button" onclick="PF('rnm').hide()" />-->
+            </pr:outputPanel>
+        </pr:dialog>
+    </h:form>
+
+</f:view>
+</h:body>
+</html>
