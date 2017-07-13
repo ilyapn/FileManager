@@ -26,7 +26,6 @@
                 <pr:ajax event="expand"
                          delay="2000"/><!--onstart="iconLoad()"update="isTable:lbl tr"listener="#{treeBasicView.listener}"-->
                 <pr:ajax event="select" update=":isTable:tree"/>
-                <pr:ajax event="unselect" update=":isTable:tree"/>
                 <pr:ajax event="dragdrop" listener="#{treeBasicView.onDragDrop}" update=":isTable:tree"/>
                 <pr:treeNode id="tr" collapsedIcon="ui-icon-folder-collapsed"
                              expandedIcon="ui-icon-folder-open"><!--ui-icon-folder-open--><!--collapsedIcon="ui-icon-folder-collapsed"-->
@@ -36,15 +35,14 @@
             <pr:contextMenu for="tree">
                 <pr:menuitem value="delete" update=":isTable:tree" actionListener="#{treeBasicView.delete}"/>
                 <pr:menuitem value="new folder" update=":isTable:tree" actionListener="#{treeBasicView.addNode()}"/>
-                <pr:menuitem value="rename" update=":isTable:tree" oncomplete="PF('rnm').show()"/><!--text-->
+                <pr:menuitem value="rename" update=":isTable:tree" onclick="PF('rnm').show()" /><!--text oncomplete=""-->
             </pr:contextMenu>
-            <pr:dialog widgetVar="rnm" dynamic="false" modal="true" showEffect="fade" hideEffect="fade"
-                       resizable="false">
+            <pr:dialog widgetVar="rnm" dynamic="true" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <pr:outputPanel style="text-align:center;">
                     <h:outputLabel value="rename:"/>
                     <pr:inplace id="inpl" editor="true">
-                        <pr:ajax event="save" update="isTable"></pr:ajax>
-                        <pr:ajax event="cancel" update="isTable"></pr:ajax>
+                        <pr:ajax event="save" update=":isTable:tree"></pr:ajax>
+                        <pr:ajax event="cancel" update=":isTable:tree"></pr:ajax>
                         <pr:inputText id="text" value="#{treeBasicView.rename}"><!--required="true" label="text"-->
                         </pr:inputText>
                     </pr:inplace>
