@@ -15,7 +15,7 @@
                <artifactId>tomcat7-maven-plugin</artifactId>
                <version>2.2</version>
                <configuration>
-                 <url>http://localhost:8080/manager/text</url>
+                 <url>http://localhost:8090/manager/text</url>
                  <username>user</username>
                  <password>123456</password>
                </configuration>
@@ -72,21 +72,6 @@
     </repositories>
 
     <dependencies>
-       <!--  https://mvnrepository.com/artifact/com.sun.faces/mojarra-jsf-impl
-        <dependency>
-            <groupId>com.sun.faces</groupId>
-            <artifactId>mojarra-jsf-impl</artifactId>
-            <version>2.0.0-b04</version>
-        </dependency>-->
-
-
-        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.6</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>
             <groupId>mysql</groupId>
@@ -165,21 +150,25 @@
             <artifactId>el-ri</artifactId>
             <version>1.0</version>
         </dependency>
+
         <dependency>
             <groupId>com.sun.faces</groupId>
             <artifactId>jsf-api</artifactId>
             <version>2.2.14</version>
         </dependency>
+
         <dependency>
             <groupId>org.primefaces</groupId>
             <artifactId>primefaces</artifactId>
             <version>6.0</version>
         </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
             <version>4.3.9.RELEASE</version>
         </dependency>
+
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>

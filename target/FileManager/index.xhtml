@@ -11,42 +11,37 @@
             <title>PrimeFaces</title>
         </f:facet>
         <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"></link>
-        <script type="text/javascript" src="scripts/script.js"></script>
     </h:head>
     <h:body>
 
-        <h:form id="isTable">
-            <pr:outputLabel value="#{treeBasicView.count}"/>
-            <!--<pr:outputLabel value="#{treeBasicView.dropNode}"/>-->
+        <h:form id="form">
+            <pr:poll listener="#{treeBasicView.updateDB}" interval="5"/>
             <br/>
             <pr:tree id="tree" draggable="true" droppable="true" dragdropScope="demo" highlight="true" required="true"
                      value="#{treeBasicView.root}" selectionMode="single" selection="#{treeBasicView.selectedNode}"
-                     var="node" dynamic="true" style="width:50%"
+                     var="node" dynamic="true" style="width:50%;height:20%" cache="true"
             >
-                <pr:ajax event="expand"
-                         delay="2000"/><!--onstart="iconLoad()"update="isTable:lbl tr"listener="#{treeBasicView.listener}"-->
-                <pr:ajax event="select" update=":isTable:tree"/>
-                <pr:ajax event="dragdrop" listener="#{treeBasicView.onDragDrop}" update=":isTable:tree"/>
-                <pr:treeNode id="tr" collapsedIcon="ui-icon-folder-collapsed"
-                             expandedIcon="ui-icon-folder-open"><!--ui-icon-folder-open--><!--collapsedIcon="ui-icon-folder-collapsed"-->
-                    <h:outputLabel id="tar" value="#{node}"/>
+                <pr:ajax event="expand" delay="2000" onstart="" />
+                <pr:ajax event="select" update=":form:tree"/>
+                <pr:ajax event="dragdrop" listener="#{treeBasicView.onDragDrop}" update=":form:tree"/>
+                <pr:treeNode collapsedIcon="ui-icon-folder-collapsed" expandedIcon="ui-icon-folder-open">
+                    <h:outputLabel  value="#{node}"/>
                 </pr:treeNode>
             </pr:tree>
             <pr:contextMenu for="tree">
-                <pr:menuitem value="delete" update=":isTable:tree" actionListener="#{treeBasicView.delete}"/>
-                <pr:menuitem value="new folder" update=":isTable:tree" actionListener="#{treeBasicView.addNode()}"/>
-                <pr:menuitem value="rename" update=":isTable:tree" onclick="PF('rnm').show()" /><!--text oncomplete=""-->
+                <pr:menuitem value="delete" update=":form:tree" actionListener="#{treeBasicView.delete}"/>
+                <pr:menuitem value="new folder" update=":form:tree" actionListener="#{treeBasicView.addNode()}"/>
+                <pr:menuitem value="rename" update=":form:tree" onclick="PF('rnm').show()" />
             </pr:contextMenu>
             <pr:dialog widgetVar="rnm" dynamic="true" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
                 <pr:outputPanel style="text-align:center;">
                     <h:outputLabel value="rename:"/>
                     <pr:inplace id="inpl" editor="true">
-                        <pr:ajax event="save" update=":isTable:tree"></pr:ajax>
-                        <pr:ajax event="cancel" update=":isTable:tree"></pr:ajax>
-                        <pr:inputText id="text" value="#{treeBasicView.rename}"><!--required="true" label="text"-->
+                        <pr:ajax event="save" update=":form"></pr:ajax>
+                        <pr:ajax event="cancel" update=":form"></pr:ajax>
+                        <pr:inputText id="text" value="#{treeBasicView.rename}">
                         </pr:inputText>
                     </pr:inplace>
-                    <!--<p:commandButton value="rename" type="button" onclick="PF('rnm').hide()" />-->
                 </pr:outputPanel>
             </pr:dialog>
         </h:form>

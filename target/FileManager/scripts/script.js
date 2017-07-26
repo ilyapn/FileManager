@@ -10,3 +10,6 @@
 //     }
 // )
 
+function alert() {
+    alert("hello");
+}

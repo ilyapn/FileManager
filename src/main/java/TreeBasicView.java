@@ -1,122 +1,82 @@
-import org.primefaces.event.TreeDragDropEvent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
-import javax.faces.event.ActionEvent;
 import java.io.Serializable;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
-@ManagedBean(name="treeBasicView")
+@ManagedBean(name = "treeBasicView")
 @SessionScoped
 public class TreeBasicView implements Serializable {
 
 
-    private TreeNode next ;
     private TreeNode selectedNode;
-    private String testSt = "is test string";
-    Boolean isLoad = false;
-    private final TreeNode root = new DefaultTreeNode("Root", null);
-    private final TreeNode node0 = new DefaultTreeNode("/", root);
-    private int i = 0;
-    private String rename = "test";
-    private TreeNode dragNode;
-    private TreeNode dropNode;
-    private int count;
+    private TreeNode root = new DefaultTreeNode("Root", null);
+    private TreeNode node0 = new DefaultTreeNode("/", root);
+    private int ID = 0;
+    private int counterNewFolders = 0;
 
-
-    public TreeNode getDragNode() {
-        return dragNode;
-    }
-
-    public void setDragNode(TreeNode dragNode) {
-        this.dragNode = dragNode;
-    }
-
-    public TreeNode getDropNode() {
-        return dropNode;
-    }
-
-    public void setDropNode(TreeNode dropNode) {
-        this.dropNode = dropNode;
-    }
-
-
-
-    public String getTestSt() {
-        return testSt;
-    }
-
-    public void setTestSt(String testSt) {
-        this.testSt = testSt;
+    public void updateDB(){
+        db(root);
     }
 
     public TreeNode getSelectedNode() {
         return selectedNode;
     }
 
+
     public void setSelectedNode(TreeNode selectedNode) {
-        //this.selectedNode
         this.selectedNode = selectedNode;
-    }
-
-
-
-    {
-        TreeNode node00 = new DefaultTreeNode("Node00",node0);
-        next = node0;
     }
 
     public TreeNode getRoot() {
         return root;
     }
-    public void addNode(){
-       next = new DefaultTreeNode("new folder"+i++,selectedNode == null ? root : selectedNode);
-       db();
-    }
-    public void setRename(String name){
-       // ((Document)selectedNode.getData()).setName(name);
-        ((DefaultTreeNode)selectedNode).setData(name);
-    }
-    public String getRename(){
-        return  "new name";//selectedNode == null ? "new name" :(String)selectedNode.getData();
-    }
-    public void onDragDrop(TreeDragDropEvent event) {
-        dragNode = event.getDragNode();
-        dropNode = event.getDropNode();
-        int dropIndex = event.getDropIndex();
-    }
-    public void listener(ActionEvent event){
 
+    public void addNode() {
+            new DefaultTreeNode("new folder" + counterNewFolders++, selectedNode);
     }
-    public void delete(){
+
+    public void setRename(String name) {
+        ((DefaultTreeNode) selectedNode).setData(name);
+    }
+
+
+    public String getRename() {
+        return (String) selectedNode.getData();
+    }
+
+
+    public void delete() {
+        if (selectedNode.getParent() == root && root.getChildCount() == 1)
+            return;
         selectedNode.getChildren().clear();
         selectedNode.getParent().getChildren().remove(selectedNode);
         selectedNode.setParent(null);
         selectedNode = null;
     }
-
-    public void db(){
+    public void db(TreeNode root) {
+        ID=0;
         String url = "jdbc:mysql://localhost:3306/Test_schema?&serverTimezone=UTC";
         String user = "user";
         String password = "";
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(url,user,password);
+            Connection connection = DriverManager.getConnection(url, user, password);
             Statement statement = connection.createStatement();
             statement.execute("DROP TABLE IF EXISTS `TREE`");
             statement.execute("CREATE TABLE  `TREE` (" +
-                    "`id` INT NOT NULL AUTO_INCREMENT," +
+                    "`id` INT NOT NULL," +
                     "`name` CHAR(100) NOT NULL," +
                     "`parent` INT ," +
-                    "FOREIGN KEY (`parent`) REFERENCES TREE(`id`),"+
                     "PRIMARY KEY(`id`)" +
                     ")");
 
+            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `TREE` VALUES (?,?,?)");
+
+            recursiveMethod(root,ID,preparedStatement);
+            preparedStatement.executeBatch();
             connection.close();
 
         } catch (SQLException e) {
@@ -127,11 +87,17 @@ public class TreeBasicView implements Serializable {
 
     }
 
-    public int getCount() {
-        return root.getChildCount();
-    }
+    public void recursiveMethod(TreeNode parent, int PID, PreparedStatement statement) throws SQLException {
 
-    public void setCount(int count) {
-        this.count = count;
+        statement.setInt(1,++ID);
+        statement.setString(2,(String) parent.getData());
+        statement.setInt(3,PID);
+        statement.addBatch();
+        int i = ID;
+        for (TreeNode node : parent.getChildren())
+            recursiveMethod(node,i,statement);
+
+
+
     }
 }
